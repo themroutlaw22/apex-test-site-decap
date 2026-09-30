@@ -27,7 +27,7 @@ collections:
           - name: phone
             label: "Phone"
             widget: string
-            pattern: ['^\(\d{3}\) \d{3}-\d{4}$', "Use this format: (931) 555-0100"]
+            pattern: ['^\s*(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\s*$', "Enter a 10-digit US phone number, e.g. 931-555-0100"]
           - name: email
             label: "Email"
             widget: string
@@ -48,8 +48,14 @@ collections:
               - { name: price, label: "Price", widget: string }
           - name: gallery
             label: "Photos"
+            hint: "Photos appear publicly on your website as soon as you publish. Only add photos of your business, never documents or private pictures."
             widget: list
             fields:
-              - { name: image, label: "Photo (JPG, PNG, or WebP, up to 5 MB)", widget: image, choose_url: false }
+              - name: image
+                label: "Photo"
+                widget: image
+                choose_url: false
+                media_library: { config: { max_file_size: 10485760 } }   # 10 MB before processing
+                media_processing: { enabled: true, format: { enabled: true, default: webp }, quality: 80, strip_metadata: true, width: 1600 }
               - { name: alt, label: "What's in the photo? (for screen readers)", widget: string }
           - { name: announcements, label: "Announcements", widget: list, field: { name: text, label: "Announcement", widget: string } }

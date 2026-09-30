@@ -14,7 +14,12 @@ import html, json, pathlib, re, shutil, sys
 ROOT = pathlib.Path(__file__).resolve().parent
 CONTENT, UPLOADS = ROOT / "content" / "business.json", ROOT / "content" / "uploads"
 TEMPLATES, OUT = ROOT / "templates", ROOT / "site"
-PHONE = re.compile(r"^\(\d{3}\) \d{3}-\d{4}$")
+def normalize_phone(raw):
+    """Accept common US formats (931-555-0100, 931.555.0100, +1 931 555 0100, …) → "(931) 555-0100", else None."""
+    digits = re.sub(r"\D", "", raw or "")
+    if len(digits) == 11 and digits[0] == "1": digits = digits[1:]
+    return f"({digits[:3]}) {digits[3:6]}-{digits[6:]}" if len(digits) == 10 else None
+
 EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 IMAGE_TYPES = {".jpg", ".jpeg", ".png", ".webp"}
 MAX_IMAGE_MB = 5
@@ -24,7 +29,7 @@ def validate(d):
     errs = []
     for key in ("business_name", "phone", "email", "address", "hours", "services"):
         if not d.get(key): errs.append(f"missing {key}")
-    if d.get("phone") and not PHONE.match(d["phone"]): errs.append(f"phone '{d['phone']}' must look like (931) 555-0100")
+    if d.get("phone") and not normalize_phone(d["phone"]): errs.append(f"phone '{d['phone']}' isn't a 10-digit US number")
     if d.get("email") and not EMAIL.match(d["email"]): errs.append(f"email '{d['email']}' isn't a valid address")
     for i, s in enumerate(d.get("services", [])):
         if not s.get("name"): errs.append(f"services[{i}] has no name")
@@ -69,6 +74,7 @@ def main():
         print("BUILD STOPPED: content is invalid (the live site keeps its previous version):"); [print("  -", e) for e in errs]
         return 1
     d["gallery"] = [{**g, "src": PUBLIC_UPLOADS.lstrip("/") + pathlib.PurePosixPath(g["image"]).name} for g in d.get("gallery", [])]
+    d["phone"] = normalize_phone(d["phone"])              # one display style everywhere, whatever format was typed
     d["phone_tel"] = "+1" + re.sub(r"\D", "", d["phone"])  # dialable form for tel: links, derived (never typed)
     ctx = {"business": d, "_jsonld": jsonld(d)}
     if OUT.exists(): shutil.rmtree(OUT)
