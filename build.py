@@ -31,6 +31,8 @@ def validate(d):
         if not d.get(key): errs.append(f"missing {key}")
     if d.get("phone") and not normalize_phone(d["phone"]): errs.append(f"phone '{d['phone']}' isn't a 10-digit US number")
     if d.get("email") and not EMAIL.match(d["email"]): errs.append(f"email '{d['email']}' isn't a valid address")
+    if re.search("Ã.|â€", json.dumps(d, ensure_ascii=False)):  # UTF-8 text mis-decoded as Windows-1252
+        errs.append("content contains garbled characters (e.g. 'â€“' instead of '–'); fix the text encoding")
     for i, s in enumerate(d.get("services", [])):
         if not s.get("name"): errs.append(f"services[{i}] has no name")
     for i, g in enumerate(d.get("gallery", [])):

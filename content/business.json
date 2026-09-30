@@ -5,15 +5,15 @@
   "address": "200 Test St, Clarksville, TN 37040",
   "hours": [
     {
-      "days": "Tueâ€“Fri",
-      "hours": "9amâ€“7pm"
+      "days": "Tue–Fri",
+      "hours": "9am–7pm"
     },
     {
       "days": "Saturday",
       "hours": "8am-2pm"
     },
     {
-      "days": "Sunâ€“Mon",
+      "days": "Sun–Mon",
       "hours": "Closed"
     }
   ],
