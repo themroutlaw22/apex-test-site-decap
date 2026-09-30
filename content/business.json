@@ -1,50 +1,56 @@
 {
-    "business_name":  "Maple Street Barbers (FICTIONAL)",
-    "phone":  "(931) 555-0142",
-    "email":  "hello@maplestreet.example",
-    "address":  "100 Test St, Clarksville, TN 37040",
-    "hours":  [
-                  {
-                      "days":  "Tueâ€“Fri",
-                      "hours":  "9amâ€“7pm"
-                  },
-                  {
-                      "days":  "Saturday",
-                      "hours":  "8amâ€“4pm"
-                  },
-                  {
-                      "days":  "Sunâ€“Mon",
-                      "hours":  "Closed"
-                  }
-              ],
-    "services":  [
-                     {
-                         "name":  "Classic Cut",
-                         "description":  "Clippers and scissors, finished with a hot-towel neck shave.",
-                         "price":  "$30"
-                     },
-                     {
-                         "name":  "Fade",
-                         "description":  "Skin, low, mid, or high fade.",
-                         "price":  "$35"
-                     },
-                     {
-                         "name":  "Beard Trim",
-                         "description":  "Shape-up and line-up with a straight razor.",
-                         "price":  "$20"
-                     }
-                 ],
-    "announcements":  [
-                          "Now booking Saturday appointments."
-                      ],
-    "gallery":  [
-                    {
-                        "image":  "/images/uploads/sample-shop.png",
-                        "alt":  "Sample photo of the shop (placeholder)"
-                    },
-                    {
-                        "image":  "/images/uploads/sample-chair.png",
-                        "alt":  "Sample photo of a barber chair (placeholder)"
-                    }
-                ]
+  "business_name": "Maple Street Barbers & Co (FICTIONAL)",
+  "phone": "(931) 555-0199",
+  "email": "team@maplestreet.example",
+  "address": "200 Test St, Clarksville, TN 37040",
+  "hours": [
+    {
+      "days": "Tueâ€“Fri",
+      "hours": "9amâ€“7pm"
+    },
+    {
+      "days": "Saturday",
+      "hours": "8am-2pm"
+    },
+    {
+      "days": "Sunâ€“Mon",
+      "hours": "Closed"
+    }
+  ],
+  "services": [
+    {
+      "name": "Classic Cut",
+      "description": "Clippers and scissors, finished with a hot-towel neck shave.",
+      "price": "$30"
+    },
+    {
+      "name": "Fade",
+      "description": "Skin, low, mid, or high fade.",
+      "price": "$35"
+    },
+    {
+      "name": "Beard Trim",
+      "description": "Shape-up and line-up with a straight razor.",
+      "price": "$20"
+    },
+    {
+      "name": "Kids Cut ",
+      "description": "Ages 12 & Under ",
+      "price": "$20"
+    }
+  ],
+  "announcements": [
+    "Now booking Saturday appointments.",
+    "<b>Closed</b> Monday <script>alert(1)</script>"
+  ],
+  "gallery": [
+    {
+      "image": "/images/uploads/sample-shop.png",
+      "alt": "Sample photo of the shop (placeholder)"
+    },
+    {
+      "image": "/images/uploads/sample-chair.png",
+      "alt": "Sample photo of a barber chair (placeholder)"
+    }
+  ]
 }
