@@ -1,7 +1,7 @@
 <footer class="site-footer">
   <div class="container">
     <p><strong>{{ business.business_name }}</strong> · {{ business.address }}</p>
-    <p><a href="tel:{{ business.phone }}" data-editable="phone">{{ business.phone }}</a> · <a href="mailto:{{ business.email }}" data-editable="email">{{ business.email }}</a></p>
+    <p><a href="tel:{{ business.phone_tel }}" data-editable="phone">{{ business.phone }}</a> · <a href="mailto:{{ business.email }}" data-editable="email">{{ business.email }}</a></p>
     <ul class="hours" data-editable="hours"><!-- each business.hours --><li>{{ item.days }}: {{ item.hours }}</li><!-- /each --></ul>
   </div>
 </footer>

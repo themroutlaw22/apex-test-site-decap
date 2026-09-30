@@ -69,6 +69,7 @@ def main():
         print("BUILD STOPPED: content is invalid (the live site keeps its previous version):"); [print("  -", e) for e in errs]
         return 1
     d["gallery"] = [{**g, "src": PUBLIC_UPLOADS.lstrip("/") + pathlib.PurePosixPath(g["image"]).name} for g in d.get("gallery", [])]
+    d["phone_tel"] = "+1" + re.sub(r"\D", "", d["phone"])  # dialable form for tel: links, derived (never typed)
     ctx = {"business": d, "_jsonld": jsonld(d)}
     if OUT.exists(): shutil.rmtree(OUT)
     (OUT / "css").mkdir(parents=True)
