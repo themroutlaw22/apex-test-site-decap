@@ -5,15 +5,15 @@
   "address": "200 Test St, Clarksville, TN 37040",
   "hours": [
     {
-      "days": "Tue–Fri",
-      "hours": "9am–7pm"
+      "days": "Tueâ€“Fri",
+      "hours": "9amâ€“7pm"
     },
     {
       "days": "Saturday",
       "hours": "8am-2pm"
     },
     {
-      "days": "Sun–Mon",
+      "days": "Sunâ€“Mon",
       "hours": "Closed"
     }
   ],
@@ -51,6 +51,14 @@
     {
       "image": "/images/uploads/sample-chair.png",
       "alt": "Sample photo of a barber chair (placeholder)"
+    },
+    {
+      "image": "/images/uploads/carney-farms-mockup.png",
+      "alt": "test upload "
+    },
+    {
+      "image": "/images/uploads/w2-2025.pdf_page_2.jpg",
+      "alt": "test upload "
     }
   ]
 }
