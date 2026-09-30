@@ -77,7 +77,15 @@ def main():
     shutil.copytree(UPLOADS, OUT / "images" / "uploads")
     for page in sorted(TEMPLATES.glob("*.html")):
         (OUT / page.name).write_text(render(page.read_text(encoding="utf-8"), ctx), encoding="utf-8")
-    shutil.copytree(ROOT / "admin", OUT / "admin")  # the editor is served at /admin/ (noindex)
+    shutil.copytree(ROOT / "admin", OUT / "admin", ignore=shutil.ignore_patterns("backend-*.yml"))  # editor at /admin/ (noindex)
+    # Trial: a second editor entrance per login method, same fields, different backend block.
+    cfg = (ROOT / "admin" / "config.yml").read_text(encoding="utf-8")
+    start, end = cfg.index("# BACKEND START"), cfg.index("# BACKEND END") + len("# BACKEND END")
+    for backend in sorted((ROOT / "admin").glob("backend-*.yml")):
+        name = backend.stem.split("-", 1)[1]
+        dest = OUT / f"admin-{name}"; dest.mkdir()
+        shutil.copy(ROOT / "admin" / "index.html", dest / "index.html")
+        (dest / "config.yml").write_text(cfg[:start] + backend.read_text(encoding="utf-8") + cfg[end:], encoding="utf-8")
     print(f"built {len(list(TEMPLATES.glob('*.html')))} pages + {len(d['gallery'])} photos from content/ → site/")
     return 0
 

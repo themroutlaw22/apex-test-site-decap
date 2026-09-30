@@ -1,0 +1,6 @@
+# Login B: GitHub accounts via Netlify's OAuth provider (the OAuth app's secret lives only in Netlify).
+# Each editor needs their own GitHub account with write access to this repo.
+backend:
+  name: github
+  repo: apex-test-site-decap/apex-test-site-decap
+  branch: main

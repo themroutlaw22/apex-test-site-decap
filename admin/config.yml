@@ -2,18 +2,14 @@
 # The client-editor sees exactly the fields below: no templates, CSS, scripts, navigation, SEO, build, Git, or hosting.
 # No markdown/rich-text widgets, so no raw HTML can be typed; build.py escapes every value anyway.
 
-# --- Login (backend) --------------------------------------------------------------------------------
-# FILLED IN AFTER DASHAUN CHOOSES THE TRIAL LOGIN METHOD. The provider's dashboard gives the exact values;
-# they're public identifiers (no secrets belong in this file).
-#   Option A (DecapBridge): backend.name git-gateway + the repo, identity_url, gateway_url, and auth_type values it shows.
-#   Option B (GitHub login via Netlify's OAuth provider): backend: { name: github, repo: <owner>/apex-test-site-decap, branch: main }
+# --- Login (backend) ---------------------------------------------------------------------------------
+# /admin/ = Login A (DecapBridge). Its values are public identifiers from the DecapBridge dashboard (no secrets).
+# /admin-github/ = Login B (GitHub via Netlify OAuth): build.py swaps this block for admin/backend-github.yml.
+# BACKEND START
 backend:
-  name: git-gateway
+  name: git-gateway   # placeholder until DecapBridge's values arrive
   branch: main
-  # repo: ...           (from the provider)
-  # identity_url: ...   (from the provider)
-  # gateway_url: ...    (from the provider)
-
+# BACKEND END
 publish_mode: simple            # Save = publish (no drafts/review workflow for clients)
 media_folder: "content/uploads" # uploads are committed here; build.py copies them to site/images/uploads/
 public_folder: "/images/uploads"

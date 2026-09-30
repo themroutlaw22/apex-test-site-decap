@@ -8,3 +8,8 @@
   for = "/admin/*"
   [headers.values]
     X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/admin-github/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
