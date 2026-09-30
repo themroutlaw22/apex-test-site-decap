@@ -24,27 +24,4 @@
                          "price":  "$30"
                      },
                      {
-                         "name":  "Fade",
-                         "description":  "Skin, low, mid, or high fade.",
-                         "price":  "$35"
-                     },
-                     {
-                         "name":  "Beard Trim",
-                         "description":  "Shape-up and line-up with a straight razor.",
-                         "price":  "$20"
-                     }
-                 ],
-    "announcements":  [
-                          "Now booking Saturday appointments."
-                      ],
-    "gallery":  [
-                    {
-                        "image":  "/images/uploads/sample-shop.png",
-                        "alt":  "Sample photo of the shop (placeholder)"
-                    },
-                    {
-                        "image":  "/images/uploads/deleted-photo.jpg",
-                        "alt":  "Sample photo of a barber chair (placeholder)"
-                    }
-                ]
-}
+                         "name"
