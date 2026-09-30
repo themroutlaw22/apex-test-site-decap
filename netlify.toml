@@ -1,0 +1,10 @@
+# Apex TEST site (FICTIONAL). Netlify builds on every commit to main (including editor saves).
+# A failed build (exit 1) is not published: the previous deploy stays live.
+[build]
+  command = "python3 build.py"
+  publish = "site"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"

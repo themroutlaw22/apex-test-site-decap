@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact | {{ business.business_name }}</title>
+  <meta name="description" content="Editor trial contact page (FICTIONAL business).">
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<!-- include header.html -->
+<main>
+  <section class="section">
+    <div class="container">
+      <h1>Contact</h1>
+      <p>Call <a href="tel:{{ business.phone }}" data-editable="phone">{{ business.phone }}</a> or email <a href="mailto:{{ business.email }}">{{ business.email }}</a>.</p>
+      <h2>Hours</h2>
+      <ul data-editable="hours"><!-- each business.hours --><li>{{ item.days }}: {{ item.hours }}</li><!-- /each --></ul>
+    </div>
+  </section>
+</main>
+<!-- include footer.html -->
+</body>
+</html>

@@ -1,0 +1,59 @@
+# Decap CMS editor for the Apex TEST site (FICTIONAL business). Not a client site.
+# The client-editor sees exactly the fields below: no templates, CSS, scripts, navigation, SEO, build, Git, or hosting.
+# No markdown/rich-text widgets, so no raw HTML can be typed; build.py escapes every value anyway.
+
+# --- Login (backend) --------------------------------------------------------------------------------
+# FILLED IN AFTER DASHAUN CHOOSES THE TRIAL LOGIN METHOD. The provider's dashboard gives the exact values;
+# they're public identifiers (no secrets belong in this file).
+#   Option A (DecapBridge): backend.name git-gateway + the repo, identity_url, gateway_url, and auth_type values it shows.
+#   Option B (GitHub login via Netlify's OAuth provider): backend: { name: github, repo: <owner>/apex-test-site-decap, branch: main }
+backend:
+  name: git-gateway
+  branch: main
+  # repo: ...           (from the provider)
+  # identity_url: ...   (from the provider)
+  # gateway_url: ...    (from the provider)
+
+publish_mode: simple            # Save = publish (no drafts/review workflow for clients)
+media_folder: "content/uploads" # uploads are committed here; build.py copies them to site/images/uploads/
+public_folder: "/images/uploads"
+
+collections:
+  - name: business
+    label: "Business info"
+    editor: { preview: false }
+    files:
+      - name: info
+        label: "Hours, contact, services, photos, announcements"
+        file: "content/business.json"
+        fields:
+          - { name: business_name, label: "Business name", widget: string }
+          - name: phone
+            label: "Phone"
+            widget: string
+            pattern: ['^\(\d{3}\) \d{3}-\d{4}$', "Use this format: (931) 555-0100"]
+          - name: email
+            label: "Email"
+            widget: string
+            pattern: ['^[^@\s]+@[^@\s]+\.[^@\s]+$', "Enter a valid email address"]
+          - { name: address, label: "Address", widget: string }
+          - name: hours
+            label: "Hours"
+            widget: list
+            fields:
+              - { name: days, label: "Days", widget: string }
+              - { name: hours, label: "Hours", widget: string }
+          - name: services
+            label: "Services"
+            widget: list
+            fields:
+              - { name: name, label: "Service", widget: string }
+              - { name: description, label: "Description", widget: text }
+              - { name: price, label: "Price", widget: string }
+          - name: gallery
+            label: "Photos"
+            widget: list
+            fields:
+              - { name: image, label: "Photo (JPG, PNG, or WebP, up to 5 MB)", widget: image, choose_url: false }
+              - { name: alt, label: "What's in the photo? (for screen readers)", widget: string }
+          - { name: announcements, label: "Announcements", widget: list, field: { name: text, label: "Announcement", widget: string } }

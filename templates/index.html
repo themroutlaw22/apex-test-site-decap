@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ business.business_name }} | Clarksville, TN</title>
+  <meta name="description" content="Editor trial page (FICTIONAL business).">
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<!-- include header.html -->
+<main>
+  <section class="section">
+    <div class="container">
+      <h1>{{ business.business_name }}</h1>
+      <ul class="announcements" data-editable="announcements"><!-- each business.announcements --><li>{{ item.text }}</li><!-- /each --></ul>
+      <h2>Services</h2>
+      <ul class="services" data-editable="services"><!-- each business.services --><li><h3>{{ item.name }} — {{ item.price }}</h3><p>{{ item.description }}</p></li><!-- /each --></ul>
+      <h2>Photos</h2>
+      <div class="gallery" data-editable="gallery"><!-- each business.gallery --><img src="{{ item.src }}" alt="{{ item.alt }}" width="1200" height="800" loading="lazy"><!-- /each --></div>
+    </div>
+  </section>
+</main>
+<!-- include footer.html -->
+</body>
+</html>
