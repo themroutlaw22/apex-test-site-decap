@@ -1,15 +1,17 @@
-"""Build the test site: render templates/*.html with content/business.json into site/ (Python stdlib only).
+"""Build the test site: render templates/*.html with content/business.json into site/ (Python + PyYAML, see requirements.txt).
 
 Usage:  python build.py        (the host runs this on every commit; locally: py -3 build.py)
 - One source per fact: every page and the LocalBusiness schema read from content/business.json.
 - Clients can only change content/ (via the editor). templates/, this script, and config are Apex-only.
 - Every value is HTML-escaped: content can't inject markup or scripts.
-- Invalid content stops the build with exit 1, so the host keeps the previous live version.
+- Invalid content or a broken editor config stops the build with exit 1, so the host keeps the previous live site
+  and editor (a broken config would otherwise show clients "Error loading CMS configuration").
 - Photos: only the gallery's photos are copied from content/uploads/ to site/images/uploads/ (unused uploads aren't
   served). Each gallery photo must exist, be JPG/PNG/WebP, be at most MAX_IMAGE_MB, and have alt text.
 Template syntax: {{ path.to.value }} (escaped) · <!-- each list -->…{{ item.x }}…<!-- /each --> · <!-- include partial.html -->
 """
 import html, json, pathlib, re, shutil, sys
+import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent
 CONTENT, UPLOADS = ROOT / "content" / "business.json", ROOT / "content" / "uploads"
@@ -45,6 +47,31 @@ def validate(d):
         if not g.get("alt"): errs.append(f"gallery[{i}] needs a short description (alt text)")
     return errs
 
+def editor_configs():
+    """(folder, config text) for /admin/ and each /admin-<login>/: same fields, a different backend block per login."""
+    cfg = (ROOT / "admin" / "config.yml").read_text(encoding="utf-8")
+    start, end = cfg.index("# BACKEND START"), cfg.index("# BACKEND END") + len("# BACKEND END")
+    yield "admin", cfg
+    for backend in sorted((ROOT / "admin").glob("backend-*.yml")):
+        yield "admin-" + backend.stem.split("-", 1)[1], cfg[:start] + backend.read_text(encoding="utf-8") + cfg[end:]
+
+def validate_editor(folder, text):
+    """The checks that make Decap refuse to load: YAML syntax, a backend, a media folder, and usable collections."""
+    try:
+        c = yaml.safe_load(text)
+    except yaml.YAMLError as e:
+        return [f"{folder}/config.yml isn't valid YAML: {' '.join(str(e).split())}"]
+    if not isinstance(c, dict): return [f"{folder}/config.yml is empty"]
+    errs = []
+    if not isinstance(c.get("backend"), dict) or not c["backend"].get("name"): errs.append(f"{folder}/config.yml: no backend name")
+    if not c.get("media_folder"): errs.append(f"{folder}/config.yml: no media_folder")
+    cols = c.get("collections")
+    if not isinstance(cols, list) or not cols: errs.append(f"{folder}/config.yml: no collections")
+    for i, col in enumerate(cols if isinstance(cols, list) else []):
+        if not isinstance(col, dict) or not col.get("name") or not (col.get("files") or col.get("folder")):
+            errs.append(f"{folder}/config.yml: collection {i + 1} needs a name and files or a folder")
+    return errs
+
 def lookup(ctx, path):
     cur = ctx
     for part in path.split("."):
@@ -71,9 +98,13 @@ def main():
         d = json.loads(CONTENT.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as e:
         print(f"BUILD STOPPED: content/business.json can't be read ({e}); the live site keeps its previous version"); return 1
-    errs = validate(d)
+    try:
+        editors = list(editor_configs())
+    except (OSError, ValueError) as e:
+        print(f"BUILD STOPPED: the editor config can't be read ({e}); the live site and editor keep their previous version"); return 1
+    errs = validate(d) + [e for folder, text in editors for e in validate_editor(folder, text)]
     if errs:
-        print("BUILD STOPPED: content is invalid (the live site keeps its previous version):"); [print("  -", e) for e in errs]
+        print("BUILD STOPPED: content or editor config is invalid (the live site and editor keep their previous version):"); [print("  -", e) for e in errs]
         return 1
     d["gallery"] = [{**g, "src": PUBLIC_UPLOADS.lstrip("/") + pathlib.PurePosixPath(g["image"]).name} for g in d.get("gallery", [])]
     d["phone"] = normalize_phone(d["phone"])              # one display style everywhere, whatever format was typed
@@ -87,15 +118,11 @@ def main():
     for g in d["gallery"]: shutil.copy(UPLOADS / pathlib.PurePosixPath(g["image"]).name, OUT / g["src"])
     for page in sorted(TEMPLATES.glob("*.html")):
         (OUT / page.name).write_text(render(page.read_text(encoding="utf-8"), ctx), encoding="utf-8")
-    shutil.copytree(ROOT / "admin", OUT / "admin", ignore=shutil.ignore_patterns("backend-*.yml"))  # editor at /admin/ (noindex)
-    # Trial: a second editor entrance per login method, same fields, different backend block.
-    cfg = (ROOT / "admin" / "config.yml").read_text(encoding="utf-8")
-    start, end = cfg.index("# BACKEND START"), cfg.index("# BACKEND END") + len("# BACKEND END")
-    for backend in sorted((ROOT / "admin").glob("backend-*.yml")):
-        name = backend.stem.split("-", 1)[1]
-        dest = OUT / f"admin-{name}"; dest.mkdir()
-        shutil.copy(ROOT / "admin" / "index.html", dest / "index.html")
-        (dest / "config.yml").write_text(cfg[:start] + backend.read_text(encoding="utf-8") + cfg[end:], encoding="utf-8")
+    # Editor entrances (noindex): /admin/ plus one per extra login method (trial), each with its checked config.
+    for folder, text in editors:
+        (OUT / folder).mkdir()
+        shutil.copy(ROOT / "admin" / "index.html", OUT / folder / "index.html")
+        (OUT / folder / "config.yml").write_text("# Checked by build.py before publishing\n" + text, encoding="utf-8")
     print(f"built {len(list(TEMPLATES.glob('*.html')))} pages + {len(d['gallery'])} photos from content/ → site/")
     return 0
 
