@@ -5,8 +5,8 @@ Usage:  python build.py        (the host runs this on every commit; locally: py 
 - Clients can only change content/ (via the editor). templates/, this script, and config are Apex-only.
 - Every value is HTML-escaped: content can't inject markup or scripts.
 - Invalid content stops the build with exit 1, so the host keeps the previous live version.
-- Photos: files the editor uploads to content/uploads/ are copied to site/images/uploads/. Each gallery photo must
-  exist, be JPG/PNG/WebP, be at most MAX_IMAGE_MB, and have alt text.
+- Photos: only the gallery's photos are copied from content/uploads/ to site/images/uploads/ (unused uploads aren't
+  served). Each gallery photo must exist, be JPG/PNG/WebP, be at most MAX_IMAGE_MB, and have alt text.
 Template syntax: {{ path.to.value }} (escaped) · <!-- each list -->…{{ item.x }}…<!-- /each --> · <!-- include partial.html -->
 """
 import html, json, pathlib, re, shutil, sys
@@ -82,7 +82,9 @@ def main():
     if OUT.exists(): shutil.rmtree(OUT)
     (OUT / "css").mkdir(parents=True)
     shutil.copy(TEMPLATES / "styles.css", OUT / "css" / "styles.css")
-    shutil.copytree(UPLOADS, OUT / "images" / "uploads")
+    # Publish only the photos the gallery uses: a removed or replaced photo stays in Git but is no longer served.
+    (OUT / "images" / "uploads").mkdir(parents=True)
+    for g in d["gallery"]: shutil.copy(UPLOADS / pathlib.PurePosixPath(g["image"]).name, OUT / g["src"])
     for page in sorted(TEMPLATES.glob("*.html")):
         (OUT / page.name).write_text(render(page.read_text(encoding="utf-8"), ctx), encoding="utf-8")
     shutil.copytree(ROOT / "admin", OUT / "admin", ignore=shutil.ignore_patterns("backend-*.yml"))  # editor at /admin/ (noindex)
