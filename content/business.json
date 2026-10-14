@@ -51,6 +51,10 @@
     {
       "image": "/images/uploads/sample-chair.png",
       "alt": "Sample photo of a barber chair (placeholder)"
+    },
+    {
+      "image": "/images/uploads/test-photo-a-large-with-metadata.webp",
+      "alt": "test photo A "
     }
   ]
 }
