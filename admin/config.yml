@@ -16,7 +16,6 @@ public_folder: "/images/uploads"
 
 collections:
   - name: business
-   label_broken: [unclosed
     label: "Business info"
     editor: { preview: false }
     files:
